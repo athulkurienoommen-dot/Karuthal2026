@@ -3,325 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karuthal 2026 - Donation Calculator</title>
+    <title>Karuthal 2026 - Interactive Calculator</title>
     <style>
         :root {
             --primary-color: #1a365d;
-            --secondary-color: #2b6cb0;
-            --accent-color: #319795;
-            --bg-color: #f7fafc;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-color: #2d3748;
+            --text-color: #334155;
+            --slider-track: #e2e8f0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
-            line-height: 1.6;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
+        .calc-wrapper {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 900px;
+            padding: 35px;
+            box-sizing: border-box;
         }
 
         header {
             text-align: center;
-            padding: 20px 0 30px 0;
-            border-bottom: 3px solid var(--primary-color);
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         header h1 {
             color: var(--primary-color);
-            margin: 0 0 5px 0;
-            font-size: 2.2rem;
-        }
-
-        header h2 {
-            color: var(--secondary-color);
-            margin: 0 0 10px 0;
-            font-weight: 500;
-            font-size: 1.4rem;
+            margin: 0 0 4px 0;
+            font-size: 1.8rem;
+            font-weight: 700;
         }
 
         header p {
-            font-style: italic;
-            color: #4a5568;
+            color: #64748b;
             margin: 0;
+            font-size: 0.95rem;
         }
 
-        .grid {
+        .layout-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 30px;
+            gap: 40px;
         }
 
         @media (min-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr 1fr;
+            .layout-grid {
+                grid-template-columns: 1.2fr 0.8fr;
             }
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
-            padding: 25px;
-            box-sizing: border-box;
-        }
-
-        .calculator-card {
-            border-top: 5px solid var(--accent-color);
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-        }
-
-        h3 {
-            color: var(--primary-color);
-            margin-top: 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-color);
-        }
-
-        select, input[type="number"] {
+        /* Segmented Control / Pills styling */
+        .segmented-control {
+            display: inline-flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 99px;
+            margin-bottom: 25px;
             width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 5px;
-            font-size: 1rem;
             box-sizing: border-box;
         }
 
-        select:focus, input:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 5px;
-        }
-
-        .radio-label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: normal;
+        .segment-btn {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 10px;
+            border-radius: 99px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #64748b;
             cursor: pointer;
-        }
-
-        .result-box {
-            background-color: #ebf8ff;
-            border-left: 5px solid var(--secondary-color);
-            padding: 20px;
-            border-radius: 4px;
-            margin-top: 25px;
+            transition: all 0.2s ease;
             text-align: center;
         }
 
-        .result-box h4 {
-            margin: 0 0 5px 0;
-            color: var(--secondary-color);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-        }
-
-        .total-amount {
-            font-size: 2.2rem;
-            font-weight: bold;
+        .segment-btn.active {
+            background: #ffffff;
             color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-        .tabs {
+        /* Form Controls and Sliders */
+        .control-group {
+            margin-bottom: 30px;
+        }
+
+        .label-row {
             display: flex;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #e2e8f0;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
 
-        .tab-btn {
-            padding: 10px 20px;
-            border: none;
-            background: none;
-            cursor: pointer;
+        .control-label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .badge-value {
+            background-color: #ecfdf5;
+            color: var(--accent-color);
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 1rem;
-            font-weight: 600;
-            color: #718096;
-            transition: all 0.2s;
+            min-width: 60px;
+            text-align: center;
         }
 
-        .tab-btn.active {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            margin-bottom: -2px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
+        /* Modern Range Sliders */
+        .modern-slider {
+            -webkit-appearance: none;
             width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            text-align: left;
+            height: 6px;
+            border-radius: 99px;
+            background: var(--slider-track);
+            outline: none;
+            margin: 15px 0;
         }
 
-        th, td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e2e8f0;
+        .modern-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: transform 0.1s ease;
         }
 
-        th {
-            background-color: #f7fafc;
-            color: var(--primary-color);
+        .modern-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        /* Output Card Side */
+        .summary-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #fdfdfd;
+            border: 1px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+
+        .summary-row span.val {
+            color: #1e293b;
             font-weight: 600;
         }
 
-        tr:hover {
-            background-color: #f8fafc;
+        .total-box {
+            border-top: 1px solid #f1f5f9;
+            padding-top: 20px;
+            margin-top: 10px;
         }
 
-        .text-right {
-            text-align: right;
+        .total-box h4 {
+            margin: 0 0 4px 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .total-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        /* UPI CTA Button */
+        .pay-btn {
+            display: block;
+            background-color: var(--accent-color);
+            color: white;
+            text-align: center;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .pay-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .desktop-note {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 12px;
+            text-align: center;
+            line-height: 1.3;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="calc-wrapper">
     <header>
-        <h1>Holy Trinity Chapel, Ulloor</h1>
-        <h2>Gregorian Orthodox Christian Youth Movement</h2>
-        <p>Karuthal 2026 — Educational Support Initiative</p>
+        <h1>Karuthal 2026</h1>
+        <p>Holy Trinity Chapel, Ulloor — Youth Movement</p>
     </header>
 
-    <div class="grid">
-        <!-- LEFT COLUMN: TABLES -->
-        <div class="card">
-            <h3>Fee Reference Tables</h3>
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTable('tuition')">Tuition Fees</button>
-                <button class="tab-btn" onclick="switchTable('book')">Book Charges</button>
+    <div class="layout-grid">
+        <div>
+            <div class="segmented-control">
+                <button class="segment-btn active" id="btn-tuition" onclick="setType('tuition')">Tuition Fee</button>
+                <button class="segment-btn" id="btn-book" onclick="setType('book')">Book Charge</button>
             </div>
 
-            <!-- Tuition Fee Table -->
-            <div id="tuition-table-view" class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Class</th>
-                            <th class="text-right">Yearly</th>
-                            <th class="text-right">Term</th>
-                            <th class="text-right">Month</th>
-                            <th class="text-right">Daily</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tuition-tbody"></tbody>
-                </table>
+            <div class="segmented-control">
+                <button class="segment-btn active" id="freq-yearly" onclick="setFrequency('yearly')">Yearly</button>
+                <button class="segment-btn" id="freq-term" onclick="setFrequency('term')">Termly</button>
+                <button class="segment-btn" id="freq-month" onclick="setFrequency('month')">Monthly</button>
+                <button class="segment-btn" id="freq-day" onclick="setFrequency('day')">Daily</button>
             </div>
 
-            <!-- Book Charge Table -->
-            <div id="book-table-view" class="table-container" style="display: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Class</th>
-                            <th class="text-right">Yearly</th>
-                            <th class="text-right">Term</th>
-                            <th class="text-right">Month</th>
-                            <th class="text-right">Daily</th>
-                        </tr>
-                    </thead>
-                    <tbody id="book-tbody"></tbody>
-                </table>
+            <div class="control-group">
+                <div class="label-row">
+                    <span class="control-label">Target Class Standard</span>
+                    <span class="badge-value" id="classBadge">LKG</span>
+                </div>
+                <input type="range" id="classSlider" min="0" max="13" value="0" class="modern-slider" oninput="updateCalculation()">
+            </div>
+
+            <div class="control-group">
+                <div class="label-row">
+                    <span class="control-label">Number of Students</span>
+                    <span class="badge-value" id="studentBadge">1</span>
+                </div>
+                <input type="range" id="studentSlider" min="1" max="10" value="1" class="modern-slider" oninput="updateCalculation()">
+            </div>
+
+            <div class="control-group" id="durationUiGroup" style="display: none;">
+                <div class="label-row">
+                    <span class="control-label" id="durationTitle">Duration</span>
+                    <span class="badge-value" id="durationBadge">1</span>
+                </div>
+                <input type="range" id="durationSlider" min="1" max="12" value="1" class="modern-slider" oninput="updateCalculation()">
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: CALCULATOR -->
-        <div class="card calculator-card">
-            <h3>Donation Planning Calculator</h3>
-            
-            <!-- Type Select -->
-            <div class="form-group">
-                <label>1. Select Support Type</label>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="donationType" value="tuition" checked onchange="calculateTotal()"> Tuition Fee
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="donationType" value="book" onchange="calculateTotal()"> Book Charge
-                    </label>
+        <div class="summary-side">
+            <div>
+                <div class="summary-row">
+                    <span>Support Type:</span>
+                    <span class="val" id="sumType">Tuition Fee</span>
+                </div>
+                <div class="summary-row">
+                    <span>Class Range:</span>
+                    <span class="val" id="sumClass">LKG</span>
+                </div>
+                <div class="summary-row">
+                    <span>Student Matrix:</span>
+                    <span class="val" id="sumStudents">1 Student</span>
+                </div>
+                <div class="summary-row" id="sumDurationRow" style="display:none;">
+                    <span>Timeline:</span>
+                    <span class="val" id="sumDuration">1 Month</span>
                 </div>
             </div>
 
-            <!-- Class Select -->
-            <div class="form-group">
-                <label for="classSelect">2. Select Class</label>
-                <select id="classSelect" onchange="calculateTotal()"></select>
-            </div>
-
-            <!-- Number of Students -->
-            <div class="form-group">
-                <label for="studentCount">3. Number of Students to Support</label>
-                <input type="number" id="studentCount" value="1" min="1" oninput="calculateTotal()">
-            </div>
-
-            <!-- Frequency Select -->
-            <div class="form-group">
-                <label>4. Donation Frequency</label>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="frequency" value="yearly" checked onchange="handleFrequencyChange()"> Yearly
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="frequency" value="term" onchange="handleFrequencyChange()"> Termly
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="frequency" value="month" onchange="handleFrequencyChange()"> Monthly
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="frequency" value="day" onchange="handleFrequencyChange()"> Daily
-                    </label>
+            <div class="total-box">
+                <h4>Total Donation Value</h4>
+                <div class="total-price">₹<span id="grandTotal">0</span></div>
+                
+                <a href="#" id="actionPayBtn" class="pay-btn">📱 Pay via UPI</a>
+                <div class="desktop-note" id="desktopRemHelper">
+                    For system transfers, use UPI ID: <b>yourchurchupi@bank</b><br>
+                    <span id="txtUpiRemark" style="color:var(--secondary-color); font-weight:600;"></span>
                 </div>
-            </div>
-
-            <!-- Dynamic Duration Input -->
-            <div class="form-group" id="durationGroup" style="display: none;">
-                <label id="durationLabel" for="durationInput">Number of Terms</label>
-                <input type="number" id="durationInput" value="1" min="1" oninput="calculateTotal()">
-            </div>
-
-            <!-- Dynamic Summary Statement -->
-            <div class="result-box">
-                <h4>Estimated Donation Amount</h4>
-                <div class="total-amount">₹<span id="totalDisplay">0</span></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Data structures mapped directly from your documents
+    // System Configurations Mapping
+    const CHURCH_UPI_ID = "yourchurchupi@bank"; 
+    const CHURCH_NAME = "Holy Trinity Chapel Ulloor";
+
     const classesOrder = ["LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     
     const feeData = {
@@ -359,109 +351,98 @@
         }
     };
 
-    // Populate UI elements on load
+    // Global Interactive State Management
+    let currentType = 'tuition';
+    let currentFrequency = 'yearly';
+
     window.onload = function() {
-        populateTables();
-        populateClassDropdown();
-        calculateTotal();
+        // Adjust display mode for UPI action buttons based on architecture type
+        if(!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+            document.getElementById('actionPayBtn').style.display = 'none';
+        }
+        updateCalculation();
     };
 
-    function populateTables() {
-        const tuitionTbody = document.getElementById('tuition-tbody');
-        const bookTbody = document.getElementById('book-tbody');
+    function setType(type) {
+        currentType = type;
+        document.getElementById('btn-tuition').classList.toggle('active', type === 'tuition');
+        document.getElementById('btn-book').classList.toggle('active', type === 'book');
+        document.getElementById('sumType').textContent = type === 'tuition' ? 'Tuition Fee' : 'Book Charge';
+        updateCalculation();
+    }
 
-        classesOrder.forEach(cls => {
-            // Tuition row
-            let t = feeData.tuition[cls];
-            tuitionTbody.innerHTML += `<tr><td><b>${cls}</b></td><td class="text-right">₹${t.yearly}</td><td class="text-right">₹${t.term}</td><td class="text-right">₹${t.month}</td><td class="text-right">₹${t.day}</td></tr>`;
-            
-            // Book row
-            let b = feeData.book[cls];
-            bookTbody.innerHTML += `<tr><td><b>${cls}</b></td><td class="text-right">₹${b.yearly}</td><td class="text-right">₹${b.term}</td><td class="text-right">₹${b.month}</td><td class="text-right">₹${b.day}</td></tr>`;
+    function setFrequency(freq) {
+        currentFrequency = freq;
+        const frequencies = ['yearly', 'term', 'month', 'day'];
+        frequencies.forEach(f => {
+            document.getElementById(`freq-${f}`).classList.toggle('active', f === freq);
         });
-    }
 
-    function populateClassDropdown() {
-        const select = document.getElementById('classSelect');
-        classesOrder.forEach(cls => {
-            let option = document.createElement('option');
-            option.value = cls;
-            option.textContent = `Class ${cls}`;
-            select.appendChild(option);
-        });
-    }
-
-    function switchTable(type) {
-        const tabs = document.querySelectorAll('.tab-btn');
-        tabs.forEach(tab => tab.classList.remove('active'));
-        
-        if (type === 'tuition') {
-            tabs[0].classList.add('active');
-            document.getElementById('tuition-table-view').style.display = 'block';
-            document.getElementById('book-table-view').style.display = 'none';
-        } else {
-            tabs[1].classList.add('active');
-            document.getElementById('tuition-table-view').style.display = 'none';
-            document.getElementById('book-table-view').style.display = 'block';
-        }
-    }
-
-    function handleFrequencyChange() {
-        const freq = document.querySelector('input[name="frequency"]:checked').value;
-        const durationGroup = document.getElementById('durationGroup');
-        const durationLabel = document.getElementById('durationLabel');
-        const durationInput = document.getElementById('durationInput');
+        const dGroup = document.getElementById('durationUiGroup');
+        const dSlider = document.getElementById('durationSlider');
+        const dTitle = document.getElementById('durationTitle');
 
         if (freq === 'yearly') {
-            durationGroup.style.display = 'none';
-            durationInput.value = 1;
+            dGroup.style.display = 'none';
+            document.getElementById('sumDurationRow').style.display = 'none';
         } else {
-            durationGroup.style.display = 'block';
+            dGroup.style.display = 'block';
+            document.getElementById('sumDurationRow').style.display = 'flex';
             if (freq === 'term') {
-                durationLabel.textContent = "For how many Terms?";
-                durationInput.max = 3; // Standard 3 terms/year
+                dTitle.textContent = "Number of Terms";
+                dSlider.max = 3;
+                if (dSlider.value > 3) dSlider.value = 3;
             } else if (freq === 'month') {
-                durationLabel.textContent = "For how many Months?";
-                durationInput.removeAttribute('max');
+                dTitle.textContent = "Number of Months";
+                dSlider.max = 12;
             } else if (freq === 'day') {
-                durationLabel.textContent = "For how many Days?";
-                durationInput.removeAttribute('max');
+                dTitle.textContent = "Number of Days";
+                dSlider.max = 30;
             }
         }
-        calculateTotal();
+        updateCalculation();
     }
 
-    function calculateTotal() {
-        // Inputs
-        const type = document.querySelector('input[name="donationType"]:checked').value;
-        const selectedClass = document.getElementById('classSelect').value;
-        const students = parseInt(document.getElementById('studentCount').value) || 0;
-        const freq = document.querySelector('input[name="frequency"]:checked').value;
-        const duration = parseInt(document.getElementById('durationInput').value) || 0;
+    function updateCalculation() {
+        // Collect indices values from raw sliders
+        const classIndex = document.getElementById('classSlider').value;
+        const selectedClass = classesOrder[classIndex];
+        const studentCount = document.getElementById('studentSlider').value;
+        const durationValue = document.getElementById('durationSlider').value;
 
-        if (students < 0 || duration < 0) return;
+        // Sync visual badges
+        document.getElementById('classBadge').textContent = selectedClass;
+        document.getElementById('studentBadge').textContent = studentCount;
+        
+        let displayDurationText = "";
+        if (currentFrequency === 'term') displayDurationText = `${durationValue} Term${durationValue > 1 ? 's' : ''}`;
+        if (currentFrequency === 'month') displayDurationText = `${durationValue} Month${durationValue > 1 ? 's' : ''}`;
+        if (currentFrequency === 'day') displayDurationText = `${durationValue} Day${durationValue > 1 ? 's' : ''}`;
+        document.getElementById('durationBadge').textContent = durationValue;
 
-        // Get unit cost base from data array
-        const classRates = feeData[type][selectedClass];
-        let unitRate = 0;
+        // Text summary data sync
+        document.getElementById('sumClass').textContent = `Class ${selectedClass}`;
+        document.getElementById('sumStudents').textContent = `${studentCount} Student${studentCount > 1 ? 's' : ''}`;
+        document.getElementById('sumDuration').textContent = displayDurationText;
 
-        if (freq === 'yearly') {
-            unitRate = classRates.yearly;
-        } else if (freq === 'term') {
-            unitRate = classRates.term;
-        } else if (freq === 'month') {
-            unitRate = classRates.month;
-        } else if (freq === 'day') {
-            unitRate = classRates.day;
-        }
+        // Computation Execution
+        const classRates = feeData[currentType][selectedClass];
+        let unitRate = classRates[currentFrequency];
+        let durationFactor = currentFrequency === 'yearly' ? 1 : parseInt(durationValue);
+        
+        const totalAmount = unitRate * parseInt(studentCount) * durationFactor;
+        document.getElementById('grandTotal').textContent = totalAmount.toLocaleString('en-IN');
 
-        // Calculation
-        const total = unitRate * students * duration;
+        // Audit Trail Tracking Reference Label Creation
+        const typeLabel = currentType === 'tuition' ? 'Tuition' : 'Book';
+        const remarkString = `Karuthal-${typeLabel}-Std${selectedClass}-${studentCount}Kids-${durationFactor}${currentFrequency.substring(0,3)}`;
+        document.getElementById('txtUpiRemark').textContent = `Remark: ${remarkString}`;
 
-        // Display update
-        document.getElementById('totalDisplay').textContent = total.toLocaleString('en-IN');
+        // Re-inject intent deep URL parameters
+        const upiUrl = `upi://pay?pa=${encodeURIComponent(CHURCH_UPI_ID)}&pn=${encodeURIComponent(CHURCH_NAME)}&am=${totalAmount}&tn=${encodeURIComponent(remarkString)}&cu=INR`;
+        document.getElementById('actionPayBtn').href = upiUrl;
     }
 </script>
 
 </body>
-</html>	
+</html>
