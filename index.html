@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karuthal 2026 - Interactive Calculator</title>
+    <title>Karuthal 2026 - Interactive Calculator & Fee Reference</title>
     <style>
         :root {
             --primary-color: #1a365d;
@@ -20,21 +20,25 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 20px 15px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
         }
 
         .calc-wrapper {
             background: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            width: 100%;
-            max-width: 900px;
             padding: 35px;
             box-sizing: border-box;
+            margin-bottom: 30px;
         }
 
         header {
@@ -199,84 +203,195 @@
             color: var(--primary-color);
             margin-bottom: 5px;
         }
+
+        /* --- LOWER REFERENCE TABLES SECTION --- */
+        .table-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            padding: 35px;
+            box-sizing: border-box;
+        }
+
+        .table-section h2 {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .table-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .table-tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .table-tab-btn.active {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            margin-bottom: -2px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .text-right {
+            text-align: right;
+        }
     </style>
 </head>
 <body>
 
-<div class="calc-wrapper">
-    <header>
-        <h1>Karuthal 2026</h1>
-        <p>Holy Trinity Chapel, Ulloor — Youth Movement</p>
-    </header>
+<div class="container">
+    <div class="calc-wrapper">
+        <header>
+            <h1>Karuthal 2026</h1>
+            <p>Holy Trinity Chapel, Ulloor — Youth Movement</p>
+        </header>
 
-    <div class="layout-grid">
-        <div>
-            <div class="segmented-control">
-                <button class="segment-btn active" id="btn-tuition" onclick="setType('tuition')">Tuition Fee</button>
-                <button class="segment-btn" id="btn-book" onclick="setType('book')">Book Charge</button>
-            </div>
-
-            <div class="segmented-control">
-                <button class="segment-btn active" id="freq-yearly" onclick="setFrequency('yearly')">Yearly</button>
-                <button class="segment-btn" id="freq-term" onclick="setFrequency('term')">Termly</button>
-                <button class="segment-btn" id="freq-month" onclick="setFrequency('month')">Monthly</button>
-                <button class="segment-btn" id="freq-day" onclick="setFrequency('day')">Daily</button>
-            </div>
-
-            <div class="control-group">
-                <div class="label-row">
-                    <span class="control-label">Target Class Standard</span>
-                    <span class="badge-value" id="classBadge">LKG</span>
+        <div class="layout-grid">
+            <div>
+                <div class="segmented-control">
+                    <button class="segment-btn active" id="btn-tuition" onclick="setType('tuition')">Tuition Fee</button>
+                    <button class="segment-btn" id="btn-book" onclick="setType('book')">Book Charge</button>
                 </div>
-                <input type="range" id="classSlider" min="0" max="13" value="0" class="modern-slider" oninput="updateCalculation()">
+
+                <div class="segmented-control">
+                    <button class="segment-btn active" id="freq-yearly" onclick="setFrequency('yearly')">Yearly</button>
+                    <button class="segment-btn" id="freq-term" onclick="setFrequency('term')">Termly</button>
+                    <button class="segment-btn" id="freq-month" onclick="setFrequency('month')">Monthly</button>
+                    <button class="segment-btn" id="freq-day" onclick="setFrequency('day')">Daily</button>
+                </div>
+
+                <div class="control-group">
+                    <div class="label-row">
+                        <span class="control-label">Target Class Standard</span>
+                        <span class="badge-value" id="classBadge">LKG</span>
+                    </div>
+                    <input type="range" id="classSlider" min="0" max="13" value="0" class="modern-slider" oninput="updateCalculation()">
+                </div>
+
+                <div class="control-group">
+                    <div class="label-row">
+                        <span class="control-label">Number of Students</span>
+                        <span class="badge-value" id="studentBadge">1</span>
+                    </div>
+                    <input type="range" id="studentSlider" min="1" max="10" value="1" class="modern-slider" oninput="updateCalculation()">
+                </div>
+
+                <div class="control-group" id="durationUiGroup" style="display: none;">
+                    <div class="label-row">
+                        <span class="control-label" id="durationTitle">Duration</span>
+                        <span class="badge-value" id="durationBadge">1</span>
+                    </div>
+                    <input type="range" id="durationSlider" min="1" max="12" value="1" class="modern-slider" oninput="updateCalculation()">
+                </div>
             </div>
 
-            <div class="control-group">
-                <div class="label-row">
-                    <span class="control-label">Number of Students</span>
-                    <span class="badge-value" id="studentBadge">1</span>
+            <div class="summary-side">
+                <div>
+                    <div class="summary-row">
+                        <span>Support Type:</span>
+                        <span class="val" id="sumType">Tuition Fee</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Class Range:</span>
+                        <span class="val" id="sumClass">LKG</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Student Matrix:</span>
+                        <span class="val" id="sumStudents">1 Student</span>
+                    </div>
+                    <div class="summary-row" id="sumDurationRow" style="display:none;">
+                        <span>Timeline:</span>
+                        <span class="val" id="sumDuration">1 Month</span>
+                    </div>
                 </div>
-                <input type="range" id="studentSlider" min="1" max="10" value="1" class="modern-slider" oninput="updateCalculation()">
-            </div>
 
-            <div class="control-group" id="durationUiGroup" style="display: none;">
-                <div class="label-row">
-                    <span class="control-label" id="durationTitle">Duration</span>
-                    <span class="badge-value" id="durationBadge">1</span>
+                <div class="total-box">
+                    <h4>Total Donation Value</h4>
+                    <div class="total-price">₹<span id="grandTotal">0</span></div>
                 </div>
-                <input type="range" id="durationSlider" min="1" max="12" value="1" class="modern-slider" oninput="updateCalculation()">
             </div>
         </div>
+    </div>
 
-        <div class="summary-side">
-            <div>
-                <div class="summary-row">
-                    <span>Support Type:</span>
-                    <span class="val" id="sumType">Tuition Fee</span>
-                </div>
-                <div class="summary-row">
-                    <span>Class Range:</span>
-                    <span class="val" id="sumClass">LKG</span>
-                </div>
-                <div class="summary-row">
-                    <span>Student Matrix:</span>
-                    <span class="val" id="sumStudents">1 Student</span>
-                </div>
-                <div class="summary-row" id="sumDurationRow" style="display:none;">
-                    <span>Timeline:</span>
-                    <span class="val" id="sumDuration">1 Month</span>
-                </div>
-            </div>
+    <div class="table-section">
+        <h2>Complete Fee Split-up Reference</h2>
+        <div class="table-tabs">
+            <button class="table-tab-btn active" id="tab-tuition-view" onclick="switchTableView('tuition')">Tuition Fees Table</button>
+            <button class="table-tab-btn" id="tab-book-view" onclick="switchTableView('book')">Book Charges Table</button>
+        </div>
 
-            <div class="total-box">
-                <h4>Total Donation Value</h4>
-                <div class="total-price">₹<span id="grandTotal">0</span></div>
-            </div>
+        <div id="view-tuition-container" class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th class="text-right">Yearly Total</th>
+                        <th class="text-right">Per Term</th>
+                        <th class="text-right">Per Month</th>
+                        <th class="text-right">Per Day</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-tuition-data"></tbody>
+            </table>
+        </div>
+
+        <div id="view-book-container" class="table-container" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th class="text-right">Yearly Total</th>
+                        <th class="text-right">Per Term</th>
+                        <th class="text-right">Per Month</th>
+                        <th class="text-right">Per Day</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-book-data"></tbody>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
+    // Master Structured Datasets mapped from source metrics
     const classesOrder = ["LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     
     const feeData = {
@@ -318,8 +433,23 @@
     let currentFrequency = 'yearly';
 
     window.onload = function() {
+        renderReferenceTables();
         updateCalculation();
     };
+
+    // Dynamically print source tables into lower layout arrays
+    function renderReferenceTables() {
+        const tBodyTuition = document.getElementById('tbody-tuition-data');
+        const tBodyBook = document.getElementById('tbody-book-data');
+
+        classesOrder.forEach(cls => {
+            let t = feeData.tuition[cls];
+            tBodyTuition.innerHTML += `<tr><td><b>${cls}</b></td><td class="text-right">₹${t.yearly.toLocaleString('en-IN')}</td><td class="text-right">₹${t.term.toLocaleString('en-IN')}</td><td class="text-right">₹${t.month.toLocaleString('en-IN')}</td><td class="text-right">₹${t.day.toLocaleString('en-IN')}</td></tr>`;
+            
+            let b = feeData.book[cls];
+            tBodyBook.innerHTML += `<tr><td><b>${cls}</b></td><td class="text-right">₹${b.yearly.toLocaleString('en-IN')}</td><td class="text-right">₹${b.term.toLocaleString('en-IN')}</td><td class="text-right">₹${b.month.toLocaleString('en-IN')}</td><td class="text-right">₹${b.day.toLocaleString('en-IN')}</td></tr>`;
+        });
+    }
 
     function setType(type) {
         currentType = type;
@@ -359,6 +489,14 @@
             }
         }
         updateCalculation();
+    }
+
+    function switchTableView(target) {
+        document.getElementById('tab-tuition-view').classList.toggle('active', target === 'tuition');
+        document.getElementById('tab-book-view').classList.toggle('active', target === 'book');
+        
+        document.getElementById('view-tuition-container').style.display = target === 'tuition' ? 'block' : 'none';
+        document.getElementById('view-book-container').style.display = target === 'book' ? 'block' : 'none';
     }
 
     function updateCalculation() {
