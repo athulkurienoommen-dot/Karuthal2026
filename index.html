@@ -197,34 +197,7 @@
             font-size: 2.2rem;
             font-weight: 800;
             color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-        /* UPI CTA Button */
-        .pay-btn {
-            display: block;
-            background-color: var(--accent-color);
-            color: white;
-            text-align: center;
-            font-weight: 700;
-            padding: 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-            transition: all 0.2s ease;
-        }
-
-        .pay-btn:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
-        .desktop-note {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-top: 12px;
-            text-align: center;
-            line-height: 1.3;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -298,22 +271,12 @@
             <div class="total-box">
                 <h4>Total Donation Value</h4>
                 <div class="total-price">₹<span id="grandTotal">0</span></div>
-                
-                <a href="#" id="actionPayBtn" class="pay-btn">📱 Pay via UPI</a>
-                <div class="desktop-note" id="desktopRemHelper">
-                    For system transfers, use UPI ID: <b>yourchurchupi@bank</b><br>
-                    <span id="txtUpiRemark" style="color:var(--secondary-color); font-weight:600;"></span>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // System Configurations Mapping
-    const CHURCH_UPI_ID = "yourchurchupi@bank"; 
-    const CHURCH_NAME = "Holy Trinity Chapel Ulloor";
-
     const classesOrder = ["LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     
     const feeData = {
@@ -351,15 +314,10 @@
         }
     };
 
-    // Global Interactive State Management
     let currentType = 'tuition';
     let currentFrequency = 'yearly';
 
     window.onload = function() {
-        // Adjust display mode for UPI action buttons based on architecture type
-        if(!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
-            document.getElementById('actionPayBtn').style.display = 'none';
-        }
         updateCalculation();
     };
 
@@ -404,13 +362,11 @@
     }
 
     function updateCalculation() {
-        // Collect indices values from raw sliders
         const classIndex = document.getElementById('classSlider').value;
         const selectedClass = classesOrder[classIndex];
         const studentCount = document.getElementById('studentSlider').value;
         const durationValue = document.getElementById('durationSlider').value;
 
-        // Sync visual badges
         document.getElementById('classBadge').textContent = selectedClass;
         document.getElementById('studentBadge').textContent = studentCount;
         
@@ -420,27 +376,16 @@
         if (currentFrequency === 'day') displayDurationText = `${durationValue} Day${durationValue > 1 ? 's' : ''}`;
         document.getElementById('durationBadge').textContent = durationValue;
 
-        // Text summary data sync
         document.getElementById('sumClass').textContent = `Class ${selectedClass}`;
         document.getElementById('sumStudents').textContent = `${studentCount} Student${studentCount > 1 ? 's' : ''}`;
         document.getElementById('sumDuration').textContent = displayDurationText;
 
-        // Computation Execution
         const classRates = feeData[currentType][selectedClass];
         let unitRate = classRates[currentFrequency];
         let durationFactor = currentFrequency === 'yearly' ? 1 : parseInt(durationValue);
         
         const totalAmount = unitRate * parseInt(studentCount) * durationFactor;
         document.getElementById('grandTotal').textContent = totalAmount.toLocaleString('en-IN');
-
-        // Audit Trail Tracking Reference Label Creation
-        const typeLabel = currentType === 'tuition' ? 'Tuition' : 'Book';
-        const remarkString = `Karuthal-${typeLabel}-Std${selectedClass}-${studentCount}Kids-${durationFactor}${currentFrequency.substring(0,3)}`;
-        document.getElementById('txtUpiRemark').textContent = `Remark: ${remarkString}`;
-
-        // Re-inject intent deep URL parameters
-        const upiUrl = `upi://pay?pa=${encodeURIComponent(CHURCH_UPI_ID)}&pn=${encodeURIComponent(CHURCH_NAME)}&am=${totalAmount}&tn=${encodeURIComponent(remarkString)}&cu=INR`;
-        document.getElementById('actionPayBtn').href = upiUrl;
     }
 </script>
 
