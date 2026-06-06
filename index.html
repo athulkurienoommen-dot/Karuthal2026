@@ -46,17 +46,35 @@
             margin-bottom: 35px;
         }
 
+        .logo-container {
+            margin-bottom: 15px;
+        }
+
+        .logo-container img {
+            max-width: 110px;
+            height: auto;
+        }
+
         header h1 {
             color: var(--primary-color);
+            margin: 0 0 6px 0;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header h2 {
+            color: #475569;
             margin: 0 0 4px 0;
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 1.15rem;
+            font-weight: 600;
         }
 
         header p {
             color: #64748b;
             margin: 0;
             font-size: 0.95rem;
+            font-weight: 500;
         }
 
         .layout-grid {
@@ -280,8 +298,12 @@
 <div class="container">
     <div class="calc-wrapper">
         <header>
+            <div class="logo-container">
+                <img src="images.jpg" alt="Gregorian Orthodox Christian Youth Movement Emblem">
+            </div>
             <h1>Karuthal 2026</h1>
-            <p>Holy Trinity Chapel, Ulloor — Youth Movement</p>
+            <h2>Gregorian Orthodox Christian Youth Movement</h2>
+            <p>Holy Trinity Chapel, Ulloor</p>
         </header>
 
         <div class="layout-grid">
@@ -391,7 +413,6 @@
 </div>
 
 <script>
-    // Master Structured Datasets mapped from source metrics
     const classesOrder = ["LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
     
     const feeData = {
@@ -437,7 +458,6 @@
         updateCalculation();
     };
 
-    // Dynamically print source tables into lower layout arrays
     function renderReferenceTables() {
         const tBodyTuition = document.getElementById('tbody-tuition-data');
         const tBodyBook = document.getElementById('tbody-book-data');
